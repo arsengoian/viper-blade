@@ -1,0 +1,23 @@
+{
+  "name": "arsengoian/viper-blade",
+  "description": "A package enabling the use of Blade templating engine in PHP",
+  "license": "Apache-2.0",
+  "keywords": ["framework", "viper"],
+  "authors": [
+    {
+      "name": "Arsen Goian",
+      "email": "arsengoian@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4" : {
+      "Viper\\" : "src/Blade"
+    }
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=7.1.0",
+    "arsengoian/viper-framework": ">=0.2",
+    "philo/laravel-blade": ">=3.1"
+  }
+}
