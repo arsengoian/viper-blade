@@ -2,7 +2,7 @@
   "name": "arsengoian/viper-blade",
   "description": "A package enabling the use of Blade templating engine in PHP",
   "license": "Apache-2.0",
-  "keywords": ["framework", "viper"],
+  "keywords": ["framework", "viper", "blade"],
   "authors": [
     {
       "name": "Arsen Goian",
@@ -11,7 +11,6 @@
   ],
   "autoload": {
     "psr-4" : {
-
       "Blade\\" : "src/Blade"
     }
   },
