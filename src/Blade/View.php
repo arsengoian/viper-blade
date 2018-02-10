@@ -12,7 +12,6 @@ namespace Blade;
 use Philo\Blade\Blade;
 use Viper\Core\Viewable;
 use Viper\Support\Libs\Util;
-use WideImage\Exception\Exception;
 
 /**
  * Class View
@@ -21,7 +20,9 @@ use WideImage\Exception\Exception;
  */
 class View implements Viewable
 {
-    private static $vars;
+    private static $vars = [];
+    private static $errView = FALSE;
+    private static $errVar = 'e';
 
     private const CACHE_DIR = ROOT.'/storage/cache/blade';
     private const VIEW_DIR = ROOT.'/templates';
@@ -37,6 +38,20 @@ class View implements Viewable
         static::$vars = array_merge(static::$vars, $vars);
     }
 
+
+    /**
+     * Use this from filter to bind an error view name
+     * The view will be passed
+     * @param string $viewName the name of the view, without "blade.php"
+     * @param string $errVar the name of the exception varilable
+     */
+    public static function bindErrorView(string $viewName = 'error', string $viewVar = 'e'): void {
+        self::$errView = $viewName;
+        self::$errVar = $viewVar;
+    }
+
+
+
     public function __construct (string $viewname, array $data = [])
     {
         if (!is_dir(static::CACHE_DIR))
@@ -45,15 +60,17 @@ class View implements Viewable
             Util::recursiveMkdir(static::VIEW_DIR);
 
         try {
-            $this -> parse($viewname);
-        } catch(Exception $e) {
-            var_dump($e); // TODO
+            $this -> parse($viewname, array_merge(self::$vars, $data));
+        } catch(\Exception $e) {
+            if (static::$errView && file_exists(static::VIEW_DIR.'/'.self::$errView.'.blade.php'))
+                return $this -> parse(self::$errView, array_merge(self::$vars, [self::$errVar => $e]));
+            else throw $e;
         }
     }
 
-    private function parse(string $viewname) {
+    private function parse(string $viewname, array $data) {
         $blade = new Blade(self::VIEW_DIR, self::CACHE_DIR);
-        $this -> parsed = $blade -> view() -> make($viewname) -> render();
+        $this -> parsed = $blade -> view() -> make($viewname, $data) -> render();
     }
 
     public function flush (): string
