@@ -12,7 +12,10 @@
   "autoload": {
     "psr-4" : {
       "Blade\\" : "src/Blade"
-    }
+    },
+    "files": [
+      "src/support.php"
+    ]
   },
   "minimum-stability": "dev",
   "require": {
