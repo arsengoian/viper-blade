@@ -24,8 +24,12 @@ class View implements Viewable
     private static $errView = FALSE;
     private static $errVar = 'e';
 
-    private const CACHE_DIR = ROOT.'/storage/cache/blade';
-    private const VIEW_DIR = ROOT.'/templates';
+    private static function cacheDir(): string {
+        return root().'/storage/cache/blade';
+    }
+    private static function viewDir(): string {
+        return root().'/templates';
+    }
 
     private $parsed;
 
@@ -54,22 +58,22 @@ class View implements Viewable
 
     public function __construct (string $viewname, array $data = [])
     {
-        if (!is_dir(static::CACHE_DIR))
-            Util::recursiveMkdir(static::CACHE_DIR);
-        if (!is_dir(static::VIEW_DIR))
-            Util::recursiveMkdir(static::VIEW_DIR);
+        if (!is_dir(static::cacheDir()))
+            Util::recursiveMkdir(static::cacheDir());
+        if (!is_dir(static::viewDir()))
+            Util::recursiveMkdir(static::viewDir());
 
         try {
             $this -> parse($viewname, array_merge(self::$vars, $data));
         } catch(\Exception $e) {
-            if (static::$errView && file_exists(static::VIEW_DIR.'/'.self::$errView.'.blade.php'))
+            if (static::$errView && file_exists(static::viewDir().'/'.self::$errView.'.blade.php'))
                 return $this -> parse(self::$errView, array_merge(self::$vars, [self::$errVar => $e]));
             else throw $e;
         }
     }
 
     private function parse(string $viewname, array $data) {
-        $blade = new Blade(self::VIEW_DIR, self::CACHE_DIR);
+        $blade = new Blade(self::viewDir(), self::cacheDir());
         $this -> parsed = $blade -> view() -> make($viewname, $data) -> render();
     }
 
