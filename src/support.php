@@ -9,7 +9,7 @@
 use Blade\View;
 
 if (!function_exists('blade')) {
-    function blade(string $viewname, array $data) {
+    function blade(string $viewname, array $data = []) {
         return new View($viewname, $data);
     }
 }
